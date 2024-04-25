@@ -2,9 +2,10 @@ let turtle;
 let polarBear;
 let lvl;
 let screen;
-playerPosX = 100;
+playerPosX = 120;
 playerPosY = 100;
 let fish;
+let seal;
 let obs;
 let ob;
 let wins;
@@ -12,12 +13,12 @@ let gSound;
 let bg = ["underthesea.png"];
 
 function preload() {
-	gSound = loadSound("pop.wav");
+  gSound = loadSound("pop.wav");
 }
 
 function setup() {
   createCanvas(800, 600);
-      //background image
+  //background image
   bg1 = loadImage("underthesea.png");
   bg2 = loadImage("level2Screen.png");
   bg3 = loadImage("arctic.png");
@@ -25,43 +26,50 @@ function setup() {
   wins = 0;
   lvl = 1;
   screen = 1;
-    //fish set up
+  //fish set up
   fish = createSprite(650, 500);
-  fish.img = 'fishwithbubbles2.png';
+  fish.img = "fishwithbubbles2.png";
   fish.scale = 0.1;
-  fish.collider = 'static';
-  fish.w = 30
-  fish.h = 20
-  
+  fish.collider = "static";
+  fish.w = 30;
+  fish.h = 20;
+
   //turtle set up
   turtle = createSprite(playerPosX, playerPosY);
-  turtle.w = 250
-  turtle.h = 150
+  turtle.w = 250;
+  turtle.h = 150;
   turtle.img = "turtleRight.png";
   turtle.scale = 0.5;
   //turtle physics
   turtle.collider = "dynamic";
   turtle.rotationDrag = 100;
-  
-    //bear set up
+
+  //bear set up
   polarBear = createSprite(1000, 1000);
-  polarBear.w = 1500
-  polarBear.h = 1300
+  polarBear.w = 1500;
+  polarBear.h = 1300;
   polarBear.img = "polarBearRight.png";
   polarBear.scale = 0.1;
   //bear physics
   polarBear.collider = "dynamic";
   polarBear.rotationDrag = 100;
+
+    //seal set up
+  seal = createSprite(2000, 2000);
+  seal.img = "seal.png";
+  seal.scale = 0.1;
+  seal.collider = "static";
+  seal.w = 100;
+  seal.h = 50;
   
   //obstacle set up
   obs = createSprite(400, 400);
-  obs.img = "plasticBag.png"
+  obs.img = "plasticBag.png";
   obs.scale = 0.25;
-  obs.w = 55
-  obs.h = 65
+  obs.w = 55;
+  obs.h = 65;
   obs.collider = "dynamic";
-  obs.mass =10
-
+  obs.mass = 10;
 
   //create boundaries
   let top = new Sprite();
@@ -81,7 +89,7 @@ function setup() {
   bottom.collider = "static";
   bottom.color = "SkyBlue";
   bottom.stroke = "SkyBlue";
-  
+
   let left = new Sprite();
   left.width = 40;
   left.height = 600;
@@ -90,7 +98,7 @@ function setup() {
   left.collider = "static";
   left.color = "SkyBlue";
   left.stroke = "SkyBlue";
-  
+
   let right = new Sprite();
   right.width = 40;
   right.height = 600;
@@ -103,110 +111,105 @@ function setup() {
 
 function draw() {
   //set screen
-  if (screen == 1){
+  if (screen == 1) {
     background(bg1);
-  } else if (screen == 2){
+  } else if (screen == 2) {
     background(bg2);
-  }else if (screen == 3){
+  } else if (screen == 3) {
     background(bg3);
   }
 
-if (lvl == 1){
-  //move turtle right and left w/ key press
+  if (lvl == 1) {
+    //move turtle right and left w/ key press
     if (kb.pressing("left") && lvl == 1) {
-    turtle.vel.x = -5;
-    turtle.img = "turtleLeft.png";
-  } else if (kb.pressing("right") && lvl == 1) {
-    turtle.vel.x = 5;
-    turtle.img = "turtleRight.png";
-  } else turtle.vel.x = 0;
+      turtle.vel.x = -5;
+      turtle.img = "turtleLeft.png";
+    } else if (kb.pressing("right") && lvl == 1) {
+      turtle.vel.x = 5;
+      turtle.img = "turtleRight.png";
+    } else turtle.vel.x = 0;
 
-  //move turtle up and down w/ key press
-  if (kb.pressing("up") && lvl == 1) {
-    turtle.vel.y = -5;
-    turtle.img = "turtleUp.png";
-  } else if (kb.pressing("down") && lvl == 1) {
-    turtle.vel.y = 5;
-    turtle.img = "turtleDown.png";
-  } else turtle.vel.y = 0;
-  
-} else if (lvl ==2){
-  //move bear right and left w/ key press
-  if (kb.pressing("left") && lvl == 2) {
-    polarBear.vel.x = -5;
-    polarBear.img = "polarBearLeft.png";
-} else if (kb.pressing("right") && lvl == 2) {
-    polarBear.vel.x = 5;
-    polarBear.img = "polarBearRight.png";
-} else polarBear.vel.x = 0;
-  
-  //move bear up and down w/ key press
-  if (kb.pressing("up") && lvl == 2) {
-    polarBear.vel.y = -5;
-    polarBear.img = "polarBearUp.png";
-} else if (kb.pressing("down") && lvl == 2) {
-    polarBear.vel.y = 5;
-    polarBear.img = "polarBearDown.png";
-} else polarBear.vel.y = 0;
-}
+    //move turtle up and down w/ key press
+    if (kb.pressing("up") && lvl == 1) {
+      turtle.vel.y = -5;
+      turtle.img = "turtleUp.png";
+    } else if (kb.pressing("down") && lvl == 1) {
+      turtle.vel.y = 5;
+      turtle.img = "turtleDown.png";
+    } else turtle.vel.y = 0;
+  } else if (lvl == 2) {
+    //move bear right and left w/ key press
+    if (kb.pressing("left") && lvl == 2) {
+      polarBear.vel.x = -5;
+      polarBear.img = "polarBearLeft.png";
+      polarBear.scale = 0.1;
+    } else if (kb.pressing("right") && lvl == 2) {
+      polarBear.vel.x = 5;
+      polarBear.img = "polarBearRight.png";
+      polarBear.scale = 0.1;
+    } else polarBear.vel.x = 0;
 
-  
-
-  console.log(wins);
+    //move bear up and down w/ key press
+    if (kb.pressing("up") && lvl == 2) {
+      polarBear.vel.y = -5;
+      polarBear.img = "polarBearUp.png";
+      polarBear.scale = 0.125;
+    } else if (kb.pressing("down") && lvl == 2) {
+      polarBear.vel.y = 5;
+      polarBear.scale = 0.125;
+      polarBear.img = "polarBearDown.png";
+    } else polarBear.vel.y = 0;
+  }
 
   if (turtle.overlaps(fish) && wins == 0) {
     wins = 1;
     gSound.play();
     fish.x = 160;
     fish.y = 450;
-    console.log("wins:");
-    console.log(wins);
   } else if (turtle.overlaps(fish) && wins == 1) {
     wins = 2;
     gSound.play();
     fish.x = 55;
     fish.y = 55;
-    console.log("wins:");
-    console.log(wins);
   } else if (turtle.overlaps(fish) && wins == 2) {
     wins = 3;
     gSound.play();
     fish.x = 570;
     fish.y = 245;
-    console.log("wins:");
-    console.log(wins);
   } else if (turtle.overlaps(fish) && wins == 3) {
     wins = 4;
     gSound.play();
     fish.x = 365;
     fish.y = 245;
-    console.log("wins:");
-    console.log(wins);
   } else if (turtle.overlaps(fish) && wins == 4) {
     wins = 5;
     gSound.play();
-    console.log("wins:");
-    console.log(wins);
     screen = 2;
     console.log("level:");
     console.log(lvl);
     fish.remove();
     turtle.remove();
     obs.remove();
-  } else if ( screen == 2 && mouse.pressing()){
-    lvl = 2
+  } else if (screen == 2 && mouse.pressing()) {
+    lvl = 2;
     screen = 3;
+    wins = 0;
     console.log("level:");
     console.log(lvl);
-    polarBear.x = playerPosX
-    polarBear.y = playerPosY
+    polarBear.x = playerPosX;
+    polarBear.y = playerPosY;
+    seal.x = 650;
+    seal.y = 500;
+  } else if (polarBear.overlaps(seal) && wins ==0){
+  wins = 2;
+    seal.x =100
+    seal.y = 100
   }
- 
-  
-  
-  
+
   //for testing!
   //turtle.debug = mouse.pressing();
+  //polarBear.debug = mouse.pressing();
   //fish.debug = mouse.pressing();
   //obs.debug = mouse.pressing();
+  //seal.debug = mouse.pressing();
 }
