@@ -10,27 +10,34 @@ let fish;
 let seal;
 let lvl1Obs;
 let wins;
-let gSound;
-let bg = ["underthesea.png"];
+let pop, levelUpSound;
+let bg = ["startScreen.png"];
 
 function preload() {
-  gSound = loadSound("pop.wav");
+  pop = loadSound("pop.wav");
+  levelUpSound = loadSound("levelUp.wav");
+  bubbles = loadSound("bubblePop.wav");
+  roar = loadSound("bear.wav");
+  triumph = loadSound("triumph.wav");
+  woop = loadSound("monkey.wav");
+  hurt = loadSound("hurt.wav");
 }
 
 function setup() {
   createCanvas(800, 600);
   //background image
+  startScreen = loadImage("startScreen.png");
   sea = loadImage("underthesea.png");
   lvl2Screen = loadImage("level2Screen.png");
   arctic = loadImage("arctic.png");
-  //lvl3Screen = loadImage("lostLvl1.png");
-  endGame = loadImage("endScreen.png")
+  lvl3Screen = loadImage("level3Screen.png");
+  endGame = loadImage("endScreen.png");
   //set number of wins
   wins = 0;
-  lvl = 1;
+  lvl = 0;
   screen = 1;
   //fish set up
-  fish = createSprite(650, 500);
+  fish = createSprite(6500, 500);
   fish.img = "fishwithbubbles2.png";
   fish.scale = 0.1;
   fish.collider = "static";
@@ -38,7 +45,7 @@ function setup() {
   fish.h = 20;
 
   //turtle set up
-  turtle = createSprite(playerPosX, playerPosY);
+  turtle = createSprite(10000, 1);
   turtle.w = 250;
   turtle.h = 150;
   turtle.img = "turtleRight.png";
@@ -74,7 +81,7 @@ function setup() {
   seal.collider = "static";
   seal.w = 100;
   seal.h = 50;
-  
+
   //mango set up
   mango = createSprite(3000, 3000);
   mango.img = "mango.png";
@@ -85,24 +92,17 @@ function setup() {
 
   //lvl1Obstacle set up
   lvl1Obs = new Group();
-  lvl1Obs.collider = "static";
-  lvl1Obs.mass = 15;
-  lvl1Obs.w = 200
-  lvl1Obs.h = 250
+  lvl1Obs.collider = "dynamic";
+  lvl1Obs.mass = 8;
+  lvl1Obs.w = 200;
+  lvl1Obs.h = 250;
+  lvl1Obs.x = 2500;
   while (lvl1Obs.length < 4) {
     let lvl1Ob = new lvl1Obs.Sprite();
     lvl1Ob.scale = 0.25;
     lvl1Ob.img = "plasticBag.png";
   }
-  lvl1Obs[0].x = 200;
-  lvl1Obs[0].y = 200;
-  lvl1Obs[1].x = 400;
-  lvl1Obs[1].y = 400;
-  lvl1Obs[2].x = 620;
-  lvl1Obs[2].y = 100;
-  lvl1Obs[3].x = 330;
-  lvl1Obs[3].y = 500;
-  
+
   //create boundaries
   let top = new Sprite();
   top.width = 800;
@@ -144,19 +144,26 @@ function setup() {
 function draw() {
   //set screen
   if (screen == 1) {
-    background(sea);
+    background(startScreen);
   } else if (screen == 2) {
-    background(lvl2Screen);
+    background(sea);
   } else if (screen == 3) {
-    background(arctic);
-  } else if (screen == 4) {
     background(lvl2Screen);
+  } else if (screen == 4) {
+    background(arctic);
   } else if (screen == 5) {
+    background(lvl3Screen);
+  } else if (screen == 6) {
     background("green");
-  } else if (screen == 6){
-    background(endGame)
+  } else if (screen == 7) {
+    background(endGame);
   }
   
+  if(turtle.collides(lvl1Obs)){
+    hurt.play();
+    fish.x = random(100, 700);
+    fish.y = random(100, 500)
+  }
 
   //update player for each lvl
   if (lvl == 1) {
@@ -223,41 +230,57 @@ function draw() {
     } else orangutan.vel.y = 0;
   }
 
-  if (turtle.overlaps(fish) && wins == 0) {
+  if (lvl == 0 && mouse.pressing()) {
+    bubbles.play();
+    lvl = 1;
+    screen = 2;
+    turtle.x = playerPosX;
+    turtle.y = playerPosY;
+    fish.x = 650;
+    fish.y = 500;
+    lvl1Obs[0].x = 200;
+    lvl1Obs[0].y = 200;
+    lvl1Obs[1].x = 400;
+    lvl1Obs[1].y = 400;
+    lvl1Obs[2].x = 620;
+    lvl1Obs[2].y = 100;
+    lvl1Obs[3].x = 330;
+    lvl1Obs[3].y = 500;
+  } else if (turtle.overlaps(fish) && wins == 0) {
     //lvl 1
     wins = 1;
-    gSound.play();
+    pop.play();
     fish.x = 160;
     fish.y = 450;
   } else if (turtle.overlaps(fish) && wins == 1) {
     wins = 2;
-    gSound.play();
+    pop.play();
     fish.x = 55;
     fish.y = 55;
   } else if (turtle.overlaps(fish) && wins == 2) {
     wins = 3;
-    gSound.play();
+    pop.play();
     fish.x = 570;
     fish.y = 245;
   } else if (turtle.overlaps(fish) && wins == 3) {
     wins = 4;
-    gSound.play();
+    pop.play();
     fish.x = 365;
     fish.y = 245;
   } else if (turtle.overlaps(fish) && wins == 4) {
     wins = 5;
-    gSound.play();
-    //clear lvl 1 and screen 2
-    screen = 2;
+    levelUpSound.play();
+    //clear lvl 1 and screen 3
+    screen = 3;
     console.log("level:");
     console.log(lvl);
-    fish.remove();
-    turtle.remove();
-    lvl1Obs.removeAll();
+    fish.x = 1000;
+    turtle.x = 9000;
+    lvl1Obs.x = 10000;
     //lvl 2
-  } else if (screen == 2 && mouse.pressing()) {
+  } else if (screen == 3 && mouse.pressing()) {
     lvl = 2;
-    screen = 3;
+    screen = 4;
     wins = 0;
     console.log("level:");
     console.log(lvl);
@@ -267,33 +290,37 @@ function draw() {
     seal.y = 300;
   } else if (polarBear.overlaps(seal) && wins == 0) {
     wins = 1;
+    roar.play();
     seal.x = 100;
     seal.y = 100;
   } else if (polarBear.overlaps(seal) && wins == 1) {
     wins = 2;
+    roar.play();
     seal.x = 600;
     seal.y = 300;
   } else if (polarBear.overlaps(seal) && wins == 2) {
     wins = 3;
+    roar.play();
     seal.x = 100;
     seal.y = 550;
   } else if (polarBear.overlaps(seal) && wins == 3) {
     wins = 4;
+    roar.play();
     seal.x = 650;
     seal.y = 550;
   } else if (polarBear.overlaps(seal) && wins == 4) {
     wins = 5;
-    gSound.play();
-    //clear lvl 2 and screen 4
-    screen = 4;
+    levelUpSound.play();
+    //clear lvl 2 and screen 5
+    screen = 5;
     console.log("level:");
     console.log(lvl);
-    seal.remove();
-    polarBear.remove();
+    seal.x = 1000;
+    polarBear.x = 9000;
     //lvl 3
-  } else if (screen == 4 && mouse.pressing()) {
+  } else if (screen == 5 && mouse.pressing()) {
     lvl = 3;
-    screen = 5;
+    screen = 6;
     wins = 0;
     console.log("level:");
     console.log(lvl);
@@ -303,30 +330,38 @@ function draw() {
     mango.y = 300;
   } else if (orangutan.overlaps(mango) && wins == 0) {
     wins = 1;
+    woop.play();
     mango.x = 100;
     mango.y = 100;
   } else if (orangutan.overlaps(mango) && wins == 1) {
     wins = 2;
+    woop.play();
     mango.x = 600;
     mango.y = 300;
   } else if (orangutan.overlaps(mango) && wins == 2) {
     wins = 3;
+    woop.play();
     mango.x = 100;
     mango.y = 550;
   } else if (orangutan.overlaps(mango) && wins == 3) {
     wins = 4;
+    woop.play();
     mango.x = 650;
     mango.y = 100;
   } else if (orangutan.overlaps(mango) && wins == 4) {
+    triumph.play();
     wins = 5;
-    gSound.play();
-    orangutan.remove();
-    mango.remove();
-    screen = 6;
+    pop.play();
+    mango.x = 1000;
+    orangutan.x = 9000;
+    screen = 7;
   }
-
-
-
+  if ((screen == 7 && mouse.pressing()) || kb.pressing("space")) {
+    // Reset game state
+    lvl = 0;
+    wins = 0;
+    screen = 1;
+  }
 
   //for testing!
   //turtle.debug = mouse.pressing();
