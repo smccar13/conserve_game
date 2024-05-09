@@ -8,7 +8,7 @@ playerPosX = 120;
 playerPosY = 100;
 let fish;
 let seal;
-let lvl1Obs;
+let plasticBags, sodaCans, trees;
 let wins;
 let pop, levelUpSound;
 let bg = ["startScreen.png"];
@@ -31,6 +31,7 @@ function setup() {
   lvl2Screen = loadImage("level2Screen.png");
   arctic = loadImage("arctic.png");
   lvl3Screen = loadImage("level3Screen.png");
+  rainforest = loadImage("rainforest.png");
   endGame = loadImage("endScreen.png");
   //set number of wins
   wins = 0;
@@ -52,7 +53,7 @@ function setup() {
   turtle.scale = 0.5;
   //turtle physics
   turtle.collider = "dynamic";
-  turtle.rotationDrag = 100;
+  turtle.rotationDrag = 1000;
 
   //bear set up
   polarBear = createSprite(1000, 1000);
@@ -66,10 +67,10 @@ function setup() {
 
   //orangutan set up
   orangutan = createSprite(2000, 2000);
-  orangutan.w = 1000;
-  orangutan.h = 1300;
+  orangutan.w = 900;
+  orangutan.h = 1200;
   orangutan.img = "orangutanRight.png";
-  orangutan.scale = 0.1;
+  orangutan.scale = 0.12;
   //orangutan physics
   orangutan.collider = "dynamic";
   orangutan.rotationDrag = 100;
@@ -90,18 +91,68 @@ function setup() {
   mango.w = 30;
   mango.h = 30;
 
-  //lvl1Obstacle set up
-  lvl1Obs = new Group();
-  lvl1Obs.collider = "dynamic";
-  lvl1Obs.mass = 8;
-  lvl1Obs.w = 200;
-  lvl1Obs.h = 250;
-  lvl1Obs.x = 2500;
-  while (lvl1Obs.length < 4) {
-    let lvl1Ob = new lvl1Obs.Sprite();
-    lvl1Ob.scale = 0.25;
-    lvl1Ob.img = "plasticBag.png";
+  //plastic bags set up
+  plasticBags = new Group();
+  plasticBags.collider = "static";
+  plasticBags.mass = 8;
+  plasticBags.w = 200;
+  plasticBags.h = 250;
+  plasticBags.x = 2500;
+  while (plasticBags.length < 4) {
+    let plasticBag = new plasticBags.Sprite();
+    plasticBag.scale = 0.25;
+    plasticBag.img = "plasticBag.png";
   }
+  
+  
+  //soda can bags set up
+  sodaCans = new Group();
+  sodaCans.collider = "static";
+  sodaCans.mass = 8;
+  sodaCans.w = 200;
+  sodaCans.h = 250;
+  sodaCans.x = 2500;
+  while (sodaCans.length < 4) {
+    let sodaCan = new sodaCans.Sprite();
+    sodaCan.scale = 0.25;
+    sodaCan.img = "redSodaCan.png";
+  }
+  
+  //arctic set up
+  arctic1 = createSprite(-1000, -1000)
+  arctic1.collider = 'static'
+  arctic1.width = 200;
+  arctic1.height = 200;
+  arctic1.color = "skyblue"
+  arctic1.stroke = "skyblue";
+
+  arctic2 = createSprite(-2000, -2000)
+  arctic2.collider = 'static'
+  arctic2.width = 40;
+  arctic2.height = 500;
+  arctic2.color = "skyblue"
+  arctic2.stroke = "skyblue";
+  
+    arctic3 = createSprite(-3000, -3000)
+  arctic3.collider = 'static'
+  arctic3.width = 200;
+  arctic3.height = 40;
+  arctic3.color = "skyblue"
+  arctic3.stroke = "skyblue";
+  
+  //tree set up
+  trees = new Group();
+  trees.collider = "static";
+  trees.mass = 8;
+  trees.w = 1000;
+  trees.h = 300;
+  trees.x = -9000;
+  while (trees.length < 4) {
+    let tree = new trees.Sprite();
+    tree.scale = 0.17;
+    tree.img = "tree.png";
+  }
+
 
   //create boundaries
   let top = new Sprite();
@@ -154,15 +205,13 @@ function draw() {
   } else if (screen == 5) {
     background(lvl3Screen);
   } else if (screen == 6) {
-    background("green");
+    background(rainforest);
   } else if (screen == 7) {
     background(endGame);
   }
   
-  if(turtle.collides(lvl1Obs)){
+  if(turtle.collides(plasticBags) || turtle.collides(sodaCans) || polarBear.collided(arctic1)||polarBear.collided(arctic2)|| polarBear.collided(arctic3) || orangutan.collides(trees)){
     hurt.play();
-    fish.x = random(100, 700);
-    fish.y = random(100, 500)
   }
 
   //update player for each lvl
@@ -211,21 +260,21 @@ function draw() {
     if (kb.pressing("left") && lvl == 3) {
       orangutan.vel.x = -5;
       orangutan.img = "orangutanLeft.png";
-      orangutan.scale = 0.1;
+      orangutan.scale = 0.12;
     } else if (kb.pressing("right") && lvl == 3) {
       orangutan.vel.x = 5;
       orangutan.img = "orangutanRight.png";
-      orangutan.scale = 0.1;
+      orangutan.scale = 0.12;
     } else orangutan.vel.x = 0;
 
     //move bear up and down w/ key press
     if (kb.pressing("up") && lvl == 3) {
       orangutan.vel.y = -5;
       orangutan.img = "orangutanUp.png";
-      orangutan.scale = 0.1;
+      orangutan.scale = 0.12;
     } else if (kb.pressing("down") && lvl == 3) {
       orangutan.vel.y = 5;
-      orangutan.scale = 0.1;
+      orangutan.scale = 0.12;
       orangutan.img = "orangutanDown.png";
     } else orangutan.vel.y = 0;
   }
@@ -238,14 +287,20 @@ function draw() {
     turtle.y = playerPosY;
     fish.x = 650;
     fish.y = 500;
-    lvl1Obs[0].x = 200;
-    lvl1Obs[0].y = 200;
-    lvl1Obs[1].x = 400;
-    lvl1Obs[1].y = 400;
-    lvl1Obs[2].x = 620;
-    lvl1Obs[2].y = 100;
-    lvl1Obs[3].x = 330;
-    lvl1Obs[3].y = 500;
+    plasticBags[0].x = 200;
+    plasticBags[0].y = 200;
+    plasticBags[1].x = 400;
+    plasticBags[1].y = 400;
+    plasticBags[2].x = 620;
+    plasticBags[2].y = 100;
+    plasticBags[3].x = 330;
+    plasticBags[3].y = 500;
+    sodaCans[0].x = 100;
+    sodaCans[0].y = 300;
+    sodaCans[1].x = 720;
+    sodaCans[1].y = 200;
+    sodaCans[2].x = 400
+    sodaCans[2].y = 100
   } else if (turtle.overlaps(fish) && wins == 0) {
     //lvl 1
     wins = 1;
@@ -275,8 +330,9 @@ function draw() {
     console.log("level:");
     console.log(lvl);
     fish.x = 1000;
-    turtle.x = 9000;
-    lvl1Obs.x = 10000;
+    turtle.x = 10000;
+    plasticBags.x = -10000;
+    sodaCans.y = -10000;
     //lvl 2
   } else if (screen == 3 && mouse.pressing()) {
     lvl = 2;
@@ -286,8 +342,14 @@ function draw() {
     console.log(lvl);
     polarBear.x = playerPosX;
     polarBear.y = playerPosY;
-    seal.x = 250;
-    seal.y = 300;
+    seal.x = 500;
+    seal.y = 100;
+    arctic1.x = 300;
+    arctic1.y = 300;
+    arctic2.x = 400;
+    arctic2.y = 120;
+    arctic3.x = 500;
+    arctic3.y = 380;
   } else if (polarBear.overlaps(seal) && wins == 0) {
     wins = 1;
     roar.play();
@@ -317,6 +379,9 @@ function draw() {
     console.log(lvl);
     seal.x = 1000;
     polarBear.x = 9000;
+        arctic1.x = -3000;
+    arctic2.x = -4000;
+    arctic3.x = -5000;
     //lvl 3
   } else if (screen == 5 && mouse.pressing()) {
     lvl = 3;
@@ -328,6 +393,14 @@ function draw() {
     orangutan.y = playerPosY;
     mango.x = 250;
     mango.y = 300;
+    trees[0].x = 200;
+    trees[0].y = 200;
+    trees[1].x = 600;
+    trees[1].y = 400;
+    trees[2].x = 620;
+    trees[2].y = 100;
+    trees[3].x = 330;
+    trees[3].y = 500;
   } else if (orangutan.overlaps(mango) && wins == 0) {
     wins = 1;
     woop.play();
@@ -346,8 +419,8 @@ function draw() {
   } else if (orangutan.overlaps(mango) && wins == 3) {
     wins = 4;
     woop.play();
-    mango.x = 650;
-    mango.y = 100;
+    mango.x = 400;
+    mango.y = 300;
   } else if (orangutan.overlaps(mango) && wins == 4) {
     triumph.play();
     wins = 5;
@@ -355,8 +428,9 @@ function draw() {
     mango.x = 1000;
     orangutan.x = 9000;
     screen = 7;
+    trees.y = -10000;
   }
-  if ((screen == 7 && mouse.pressing()) || kb.pressing("space")) {
+  if ((screen == 7 && kb.pressing("space"))){
     // Reset game state
     lvl = 0;
     wins = 0;
@@ -367,9 +441,10 @@ function draw() {
   //turtle.debug = mouse.pressing();
   //polarBear.debug = mouse.pressing();
   //fish.debug = mouse.pressing();
-  //lvl1Obs.debug = mouse.pressing();
+  //plasticBags.debug = mouse.pressing();
   //seal.debug = mouse.pressing();
   //orangutan.debug = mouse.pressing();
   //mango.debug = mouse.pressing();
-  //lvl1Obs.debug = mouse.pressing();
+  //plasticBags.debug = mouse.pressing();
+  //trees.debug = mouse.pressing();
 }
